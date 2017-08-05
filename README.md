@@ -3,25 +3,25 @@ Hilmy A. Tawakal [hilmi.tawakal@gmail.com]
 
 ### Java For Android [16 jam]
 #### Pertemuan 1
-- Instalasi dan Pengaturan PATH JDK Windows
-- Pembuatan kode Java, Kompilasi, dan Eksekusi
-- Variable dan Tipe Data (Casting Data Type)
-- Operator (Aritmatika, Perbandingan, dll)
-- Struktur Kondisional
-- Terminator di Struktur Kondisional
+- [x] Instalasi dan Pengaturan PATH JDK Windows
+- [x] Pembuatan kode Java, Kompilasi, dan Eksekusi
+- [x] Variable dan Tipe Data (Casting Data Type)
+- [x] Operator (Aritmatika, Perbandingan, dll)
+- [x] Struktur Kondisional
+- [x] Terminator di Struktur Kondisional
 #### Pertemuan 2
-- Pengenalan antarmuka Android Studio
-- Array, Pengulangan
-- Static Method (Method Overloading, Method Return Value)
-- Non-static function
-- Pengenalan Dokumentasi Java Online
-- Exception Handling
+- [x] Pengenalan antarmuka Android Studio
+- [x] Array, Pengulangan
+- [x] Static Method (Method Overloading, Method Return Value)
+- [x] Non-static function
+- [x] Pengenalan Dokumentasi Java Online
+- [x] Exception Handling
 #### Pertemuan 3
-- Pengenalan Konsep Object Oriented Programming (selanjutnya, OOP)
-- Komponen penyusun Class (Properties & Method)
-- Access Modifier dan Package di Java
-- Class & Object
-- Class Constructor
+- [x] Pengenalan Konsep Object Oriented Programming (selanjutnya, OOP)
+- [x] Komponen penyusun Class (Properties & Method)
+- [x] Access Modifier dan Package di Java
+- [x] Class & Object
+- [x] Class Constructor
 #### Pertemuan 4
 - Inheritance didalam OOP
 - Penggunaan keyword extends dan super
