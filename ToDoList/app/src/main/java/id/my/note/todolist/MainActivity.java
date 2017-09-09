@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     //# 1. Buat variable bertipe list view
     ListView list;
-    ArrayAdapter<String> adapter;
+    ArrayAdapter<Todo> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +55,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //#2. baca siapa yang di click
+                Todo todo = (Todo) list.getItemAtPosition(position);
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Dipilih "+todo.getTitle()+" id: "+todo.get_id(),
+                        Toast.LENGTH_LONG).show();
+
                 //#3. pindah ke Activity DetailTask
                 Intent ii = new Intent(MainActivity.this, DetailTask.class);
+                //kirimkan id item yang dipilih
+                ii.putExtra("_id",todo.get_id());
                 startActivity(ii);
             }
         });
@@ -100,25 +108,38 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateIsiData(){
         //#1 siapkan penampungan data
-        ArrayList<String> taskList = new ArrayList<>();
+        ArrayList<Todo> taskList = new ArrayList<>();
         //#2 buat obj SQLiteDatabase
         SQLiteDatabase db = new TaskDbHelper(this).getReadableDatabase();
         //#3 query data
         Cursor cur = db.query("table_todo",
-                                new String[]{"title"},
+                                new String[]{"title","description","date","priority","_id"},
                                 null,null,null,null,null);
         //#4 looping cursor untuk disimpan dalam penampungan data
         while (cur.moveToNext()){
+            Todo todo = new Todo();
+            //get title
             int title_index = cur.getColumnIndex("title");
-            taskList.add(cur.getString(title_index));
+            todo.setTitle(cur.getString(title_index));
+            //get description
+            todo.setDescription(cur.getString(cur.getColumnIndex("description")));
+            //get date
+            todo.setDate(cur.getString(cur.getColumnIndex("date")));
+            //get priority
+            todo.setPriority(cur.getInt(cur.getColumnIndex("priority")));
+            //get _id
+            todo.set_id(cur.getInt(cur.getColumnIndex("_id")));
+
+            taskList.add(todo);
         }
         //#4b Jika data belum ada, munculkan pesan
         if(taskList.size() < 1){
-            taskList.add("Belum ada Task");
+            Todo t = new Todo();t.setTitle("Belum ada Todo");
+            taskList.add(t);
         }
         if(adapter == null) {
             //#5. Konversi data kedalam bentuk adapter agar sesuai dengan tampilan
-            adapter = new ArrayAdapter<String>(this,
+            adapter = new ArrayAdapter<Todo>(this,
                     android.R.layout.simple_list_item_1,
                     taskList);
             //#6. Set isi list dengan adapter yang telah dibuat

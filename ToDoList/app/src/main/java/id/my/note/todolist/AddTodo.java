@@ -11,13 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class AddTodo extends AppCompatActivity {
-    EditText txt_title;
+    EditText txt_title,txt_des;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_todo);
 
         txt_title = (EditText) findViewById(R.id.txt_title);
+        txt_des = (EditText) findViewById(R.id.txt_des);
 
         //#1. buat variable
         Button simpan = (Button) findViewById(R.id.tbl_simpan);
@@ -37,12 +38,14 @@ public class AddTodo extends AppCompatActivity {
     public void simpanData(){
         //baca data
         String title = txt_title.getText().toString().trim();
+        String desc = txt_des.getText().toString().trim();
         //simpan data
         //#1. buat obj SQLiteDatabase
         SQLiteDatabase db = new TaskDbHelper(this).getWritableDatabase();
         //#2. siapkan data yang mau ditulis
         ContentValues cv = new ContentValues();
         cv.put("title",title);
+        cv.put("description",desc);
         //#3. insert data
         db.insert("table_todo",null,cv);
     }
