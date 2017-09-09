@@ -22,12 +22,12 @@
         android:onClick="pilihTanggal" />
 
     <EditText
+        android:id="@+id/txt_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/editText"
-        android:hint="Title" />
+        android:hint="Title"
+        android:inputType="textPersonName" />
 
     <TextView
         android:text="Priority"
