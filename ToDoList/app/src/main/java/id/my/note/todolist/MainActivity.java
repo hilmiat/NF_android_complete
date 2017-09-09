@@ -1,6 +1,8 @@
 package id.my.note.todolist;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,9 +14,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     //# 1. Buat variable bertipe list view
     ListView list;
+    ArrayAdapter<String> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,11 +28,13 @@ public class MainActivity extends AppCompatActivity {
         //#2. Hubungkan variable dengan view pada xml (dgn id)
         list = (ListView) findViewById(R.id.my_list);
         //#3. Siapkan data yang akan diisi kedalam list
-        String[] data = getData();
+//        String[] data = getData();
         //#4. Konversi data kedalam bentuk adapter agar sesuai dengan tampilan
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,data);
+//        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,data);
         //#5. Set isi list dengan adapter yang telah dibuat
-        list.setAdapter(adapter);
+//        list.setAdapter(adapter);
+
+        this.updateIsiData();
 
         //Pindah ke AddTodo ketika tombol di click
         //#1. buat variable
@@ -90,4 +97,43 @@ public class MainActivity extends AppCompatActivity {
         String[] isi = {"Task 1","Task 2","Task 3"};
         return isi;
     }
+
+    private void updateIsiData(){
+        //#1 siapkan penampungan data
+        ArrayList<String> taskList = new ArrayList<>();
+        //#2 buat obj SQLiteDatabase
+        SQLiteDatabase db = new TaskDbHelper(this).getReadableDatabase();
+        //#3 query data
+        Cursor cur = db.query("table_todo",
+                                new String[]{"title"},
+                                null,null,null,null,null);
+        //#4 looping cursor untuk disimpan dalam penampungan data
+        while (cur.moveToNext()){
+            int title_index = cur.getColumnIndex("title");
+            taskList.add(cur.getString(title_index));
+        }
+        //#4b Jika data belum ada, munculkan pesan
+        if(taskList.size() < 1){
+            taskList.add("Belum ada Task");
+        }
+        if(adapter == null) {
+            //#5. Konversi data kedalam bentuk adapter agar sesuai dengan tampilan
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1,
+                    taskList);
+            //#6. Set isi list dengan adapter yang telah dibuat
+            list.setAdapter(adapter);
+        } else {
+            //#5b jika adapter sudah ada (update isi data)
+            adapter.clear();
+            adapter.addAll(taskList);
+            adapter.notifyDataSetChanged();
+        }
+        //#7 Close cursor dan db
+        cur.close();
+        db.close();
+
+    }
+
+
 }
