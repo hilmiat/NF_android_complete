@@ -26,37 +26,7 @@ public class DetailTask extends AppCompatActivity {
         final int id = getIntent().getIntExtra("_id",0);
 
         //jika id tidak 0, cari data di database
-        //#1 buat obj SQLiteDatabase
-        final SQLiteDatabase db = new TaskDbHelper(this).getReadableDatabase();
-        //#2 Query data
-        Cursor cur = db.query("table_todo",
-                new String[]{"title",
-                        "description",
-                        "date",
-                        "priority",
-                        "_id",
-                        "category"},
-                "_id = ?",
-                new String[]{id+""},
-                null,null,null
-                );
-        //baca data
-        cur.moveToFirst();
-        Todo todo = new Todo();
-        //get title
-        int title_index = cur.getColumnIndex("title");
-        todo.setTitle(cur.getString(title_index));
-        //get description
-        todo.setDescription(cur.getString(cur.getColumnIndex("description")));
-        //get date
-        todo.setDate(cur.getString(cur.getColumnIndex("date")));
-        //get priority
-        todo.setPriority(cur.getInt(cur.getColumnIndex("priority")));
-        //get _id
-        todo.set_id(cur.getInt(cur.getColumnIndex("_id")));
-        //get category
-        todo.setCategory(cur.getInt(cur.getColumnIndex("category")));
-
+        Todo todo = new TodoDBModel(this).getById(id);
 
         //set konten
         deskripsi = (TextView) findViewById(R.id.txt_konten);
@@ -80,7 +50,8 @@ public class DetailTask extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //hapus task ini
-                db.delete("table_todo","_id=?",new String[]{id+""});
+                new TodoDBModel(getApplicationContext())
+                        .deleteTodo(id);
                 //pindah kembali ke list
                 Intent i = new Intent(DetailTask.this,MainActivity.class);
                 startActivity(i);

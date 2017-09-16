@@ -20,21 +20,11 @@ public class MainActivity extends AppCompatActivity {
     //# 1. Buat variable bertipe list view
     ListView list;
     ArrayAdapter<Todo> adapter;
-    SQLiteDatabase db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //mengisi list view dengan data
-        //#2. Hubungkan variable dengan view pada xml (dgn id)
         list = (ListView) findViewById(R.id.my_list);
-        //#3. Siapkan data yang akan diisi kedalam list
-//        String[] data = getData();
-        //#4. Konversi data kedalam bentuk adapter agar sesuai dengan tampilan
-//        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,data);
-        //#5. Set isi list dengan adapter yang telah dibuat
-//        list.setAdapter(adapter);
-
         this.updateIsiData();
 
         //Pindah ke AddTodo ketika tombol di click
@@ -93,9 +83,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this,dipilih+" Selesai",Toast.LENGTH_SHORT).show();
         }else if(item.getItemId()==R.id.hapus){
             //hapus item
-            db = new TaskDbHelper(this).getWritableDatabase();
-            db.delete("table_todo","_id=?",new String[]{dipilih.get_id()+""});
-            db.close();
+            new TodoDBModel(this).deleteTodo(dipilih.get_id());
             //refresh list
             updateIsiData();
 
@@ -120,36 +108,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateIsiData(){
-        //#1 siapkan penampungan data
-        ArrayList<Todo> taskList = new ArrayList<>();
-        //#2 buat obj SQLiteDatabase
-        db = new TaskDbHelper(this).getWritableDatabase();
-        //#3 query data
-        Cursor cur = db.query("table_todo",
-                                new String[]{"title","description","date","priority","_id"},
-                                null,null,null,null,null);
-        //#4 looping cursor untuk disimpan dalam penampungan data
-        while (cur.moveToNext()){
-            Todo todo = new Todo();
-            //get title
-            int title_index = cur.getColumnIndex("title");
-            todo.setTitle(cur.getString(title_index));
-            //get description
-            todo.setDescription(cur.getString(cur.getColumnIndex("description")));
-            //get date
-            todo.setDate(cur.getString(cur.getColumnIndex("date")));
-            //get priority
-            todo.setPriority(cur.getInt(cur.getColumnIndex("priority")));
-            //get _id
-            todo.set_id(cur.getInt(cur.getColumnIndex("_id")));
-
-            taskList.add(todo);
-        }
+        ArrayList<Todo> taskList =
+                new TodoDBModel(this).getAllTodo();
         //#4b Jika data belum ada, munculkan pesan
         if(taskList.size() < 1){
             Todo t = new Todo();t.setTitle("Belum ada Todo");
             taskList.add(t);
         }
+
         if(adapter == null) {
             //#5. Konversi data kedalam bentuk adapter agar sesuai dengan tampilan
             adapter = new ArrayAdapter<Todo>(this,
@@ -163,9 +129,6 @@ public class MainActivity extends AppCompatActivity {
             adapter.addAll(taskList);
             adapter.notifyDataSetChanged();
         }
-        //#7 Close cursor dan db
-        cur.close();
-        db.close();
 
     }
 

@@ -27,8 +27,6 @@ public class AddTodo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_todo);
 
-
-
         txt_title = (EditText) findViewById(R.id.txt_title);
         txt_des = (EditText) findViewById(R.id.txt_des);
         txt_date = (EditText) findViewById(R.id.txt_date);
@@ -58,38 +56,7 @@ public class AddTodo extends AppCompatActivity {
     }
 
     private void tampilkanData() {
-        //#1 buat obj SQLiteDatabase
-        final SQLiteDatabase db = new TaskDbHelper(this).getReadableDatabase();
-        //#2 Query data
-        Cursor cur = db.query("table_todo",
-                new String[]{"title",
-                        "description",
-                        "date",
-                        "priority",
-                        "_id",
-                        "category"},
-                "_id = ?",
-                new String[]{id+""},
-                null,null,null
-        );
-        //baca data
-        cur.moveToFirst();
-        Todo todo = new Todo();
-        //get title
-        int title_index = cur.getColumnIndex("title");
-        todo.setTitle(cur.getString(title_index));
-        //get description
-        todo.setDescription(cur.getString(cur.getColumnIndex("description")));
-        //get date
-        todo.setDate(cur.getString(cur.getColumnIndex("date")));
-        //get priority
-        todo.setPriority(cur.getInt(cur.getColumnIndex("priority")));
-        //get _id
-        todo.set_id(cur.getInt(cur.getColumnIndex("_id")));
-        //get category
-        todo.setCategory(cur.getInt(cur.getColumnIndex("category")));
-
-
+        Todo todo = new TodoDBModel(this).getById(id);
         //isi form dengan data
         txt_title.setText(todo.getTitle());
         txt_date.setText(todo.getDate());
@@ -108,26 +75,20 @@ public class AddTodo extends AppCompatActivity {
         String date = txt_date.getText().toString().trim();
         int int_priority = priority.getProgress();
         int kat = kategori.getSelectedItemPosition();
-        //simpan data
-        //#1. buat obj SQLiteDatabase
-        SQLiteDatabase db = new TaskDbHelper(this).getWritableDatabase();
-        //#2. siapkan data yang mau ditulis
-        ContentValues cv = new ContentValues();
-        cv.put("title",title);
-        cv.put("description",desc);
-        cv.put("priority",int_priority);
-        cv.put("date",date);
-        cv.put("category",kat);
+
+        Todo todo = new Todo();
+        todo.setTitle(title);
+        todo.setCategory(kat);
+        todo.setDescription(desc);
+        todo.setPriority(int_priority);
+        todo.setDate(date);
 
         if(id>0){
-            //update data
-            db.update("table_todo",
-                    cv,
-                    "_id=?",
-                    new String[]{id+""});
+            todo.set_id(id);
+            new TodoDBModel(this).updateTodo(todo);
         }else{
             //#3. insert data
-            db.insert("table_todo",null,cv);
+            new TodoDBModel(this).insertTodo(todo);
         }
 
     }
