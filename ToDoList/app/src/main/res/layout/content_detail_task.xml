@@ -8,11 +8,43 @@
     tools:context="id.my.note.todolist.DetailTask"
     tools:showIn="@layout/activity_detail_task">
 
-    <TextView
-        android:id="@+id/txt_konten"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Date" />
+
+        <TextView
+            android:id="@+id/text_kat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Kategori" />
+
+        <SeekBar
+            android:id="@+id/seek_priority"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:max="5"
+            android:progress="3" />
+
+        <TextView
+            android:id="@+id/txt_konten"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:text="Deskripsi" />
+
+    </LinearLayout>
+
+
 
 </android.support.v4.widget.NestedScrollView>

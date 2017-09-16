@@ -13,12 +13,12 @@
     android:weightSum="1">
 
     <EditText
+        android:id="@+id/txt_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="date"
         android:ems="10"
-        android:id="@+id/editText6"
         android:hint="Date"
+        android:inputType="date"
         android:onClick="pilihTanggal" />
 
     <EditText
@@ -38,20 +38,20 @@
         android:layout_marginTop="10dp" />
 
     <SeekBar
+        android:id="@+id/priority"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:max="5"
-        android:progress="3"
-        android:id="@+id/seekBar" />
+        android:progress="3" />
 
     <Spinner
+        android:id="@+id/kategori"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner"
-        android:entries="@array/pilihan"
+        android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp" />
+        android:entries="@array/pilihan" />
 
     <EditText
         android:id="@+id/txt_des"

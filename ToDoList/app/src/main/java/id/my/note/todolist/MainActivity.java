@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     //# 1. Buat variable bertipe list view
     ListView list;
     ArrayAdapter<Todo> adapter;
+    SQLiteDatabase db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,14 +86,26 @@ public class MainActivity extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         //#0. Membaca item apa yang di longClick
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        String dipilih = (String) list.getItemAtPosition(info.position);
+//        String dipilih = (String) list.getItemAtPosition(info.position);
+        Todo dipilih = (Todo) list.getItemAtPosition(info.position);
         //#1. Baca menu apa yang dipilih
         if(item.getItemId()==R.id.selesai){
             Toast.makeText(this,dipilih+" Selesai",Toast.LENGTH_SHORT).show();
         }else if(item.getItemId()==R.id.hapus){
+            //hapus item
+            db = new TaskDbHelper(this).getWritableDatabase();
+            db.delete("table_todo","_id=?",new String[]{dipilih.get_id()+""});
+            db.close();
+            //refresh list
+            updateIsiData();
+
             Toast.makeText(this,"Hapus Item "+dipilih,Toast.LENGTH_SHORT).show();
         }else if(item.getItemId()==R.id.ubah){
-            Toast.makeText(this,"Update item "+dipilih,Toast.LENGTH_SHORT).show();
+            //pindah ke form (halaman add)dengan memberikan id
+            Intent i = new Intent(MainActivity.this,AddTodo.class);
+            i.putExtra("_id",dipilih.get_id());
+            startActivity(i);
+//            Toast.makeText(this,"Update item "+dipilih,Toast.LENGTH_SHORT).show();
         }
         return super.onContextItemSelected(item);
     }
@@ -110,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         //#1 siapkan penampungan data
         ArrayList<Todo> taskList = new ArrayList<>();
         //#2 buat obj SQLiteDatabase
-        SQLiteDatabase db = new TaskDbHelper(this).getReadableDatabase();
+        db = new TaskDbHelper(this).getWritableDatabase();
         //#3 query data
         Cursor cur = db.query("table_todo",
                                 new String[]{"title","description","date","priority","_id"},
